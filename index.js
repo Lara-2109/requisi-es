@@ -5,32 +5,52 @@ const port = 3000;
 
 app.use(express.json());
 
-app.get('/saudacao',(req, res) =>{
-const nome = req.query.nome;
+app.get('/saudacao', (req, res) => {
+    const nome = req.query.nome;
 
-if(!nome){
-    return res.status(400).json({error: 'Nome é obrigatório'});
-}
+    if (!nome) {
+        return res.status(400).json({ error: 'Nome é obrigatório' });
+    }
 
-res.json({message: `Olá, ${nome}`});
+    res.json({ message: `Olá, ${nome}` });
 });
 
+app.post("/imc", (req, res) => {
+    const { nome, idade, altura, peso } = req.body;
 
+    if (!nome || !idade || !altura || !peso) {
+        return res.status(400).json({
+            error: 'Os dados estão incompletos'
+        });
+    }
 
-app.post("/imc", (req, res)=>{
-     const {nome,idade,altura,peso}=req.body;
+    const imc = peso / (altura * altura);
 
-     if(!nome || !idade || !altura || !peso){
-        return res.status(400).json({error:"Dados incompletos"})
-     }
-     const imc=peso/(altura*altura);
-     res.json({
+    res.json({
         nome,
         imc: imc.toFixed(2)
-     })
+    });
+});
+app.post("/nota", (req, res) => {
+    const { nome, nota1, nota2 } = req.body;
+
+    if (!nome || !nota1 || !nota2) {
+        return res.status(400).json({
+            error: "Nome e notas são obrigatórios"
+        });
+    }
+
+    const media = (nota1 + nota2) / 2;
+    const status = media >= 7 ? "Aprovado" : "Reprovado";
+
+    res.json({
+        nome,
+        nota1,
+        nota2,
+        status
+    });
 });
 
-
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });
