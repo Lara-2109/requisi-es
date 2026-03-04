@@ -32,7 +32,7 @@ app.post("/imc", (req, res) => {
     });
 });
 app.post("/nota", (req, res) => {
-    const { nome, nota1, nota2 } = req.body;
+    const { nome, nota1,nota2 } = req.body;
 
     if (!nome || !nota1 || !nota2) {
         return res.status(400).json({
@@ -40,8 +40,7 @@ app.post("/nota", (req, res) => {
         });
     }
 
-    const media = (nota1 + nota2) / 2;
-    const status = media >= 7 ? "Aprovado" : "Reprovado";
+    const status = (nota1 + nota2) / 2 >= 7 ? "Aprovado" : "Reprovado";
 
     res.json({
         nome,
@@ -50,7 +49,36 @@ app.post("/nota", (req, res) => {
         status
     });
 });
+app.post("/alistamento", (req, res) => {
+    const { nome, idade, sexo } = req.body;
 
+    if (!nome || !idade || !sexo) {
+        return res.status(400).json({
+            error: "Nome, idade e sexo são obrigatórios"
+        });
+    }
+
+    if (sexo == "m" && idade >=18) {
+        return res.json({
+            nome,
+            mensagem: "alistamento concluido com sucesso"
+        });
+    }
+
+    if (idade < 18 && sexo == "m") {
+        return res.json({
+            nome,
+            mensagem: "o exercito te aguarda"
+        });
+    }
+
+    if (idade > 18 && sexo == "f") {
+        return res.json({
+            nome,
+            mensagem: "busque um curso preparatorio"
+        });
+    }
+});
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });
